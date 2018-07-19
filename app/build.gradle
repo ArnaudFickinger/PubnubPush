@@ -1,0 +1,90 @@
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
+
+    defaultConfig {
+        applicationId "com.leia.apprtc"
+        minSdkVersion 27
+        targetSdkVersion 27
+
+        testApplicationId "com.leia.apprtc.test"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilter "arm64-v8a"
+        }
+
+        
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    }
+    // There is an issue during the debug stripping step of libsnpe.
+    // This workaround is from https://developer.qualcomm.com/comment/13293.
+    packagingOptions {
+        doNotStrip "*/armeabi-v7a/libsnpe_*.so"
+        doNotStrip "*/arm64-v8a/libsnpe_*.so"
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v13:27.1.1'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'org.webrtc:google-webrtc:1.0.23171'
+
+    /* pubnub */
+    implementation group: 'com.pubnub', name: 'pubnub-gson', version: '4.18.0'
+
+    /* fab */
+    implementation 'com.github.clans:fab:1.6.4'
+
+    /* leia 3d camera */
+    implementation ('com.leia:stereocamera:1.8.2') {
+        exclude group: 'com.leia', module: 'go4v'
+    }
+    implementation 'com.leia:go4v:0.6.7'
+    implementation 'com.leia:display:5.1.0'
+    implementation 'com.lucid:stereolib:2.3.1'
+
+    /* hockeyapp */
+    implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
+
+    /* google oauth */
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+
+    /*firebase cloud messaging*/
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.1.0'
+
+    implementation 'com.google.android.gms:play-services-base:15.0.1'
+
+
+}
+
+apply plugin: 'com.google.gms.google-services'
